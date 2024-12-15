@@ -18,8 +18,9 @@ OPERATION_DICT = {
         }
 
 class ModuloDataGenerator:
-    def __init__(self, operation_str: str,
-                 modulo_number: int):
+    def __init__(self,
+                 modulo_number: int,
+                 operation_str: str='+'):
         self.op_str = operation_str
         self.operation = OPERATION_DICT[operation_str]
         self.p = modulo_number
@@ -27,9 +28,10 @@ class ModuloDataGenerator:
     # TODO: write general code for num_summands > 2
     def generate_data(self, num_summands: int=2) -> Tensor:
         """
-        Generate inputs and labels as one-hot vectors
+        Generate inputs as one-hot vectors, labels are not one-hot encoded
         'op' and 'eq' are treated the same as numbers
-        returns Tensor of shape (p^2, 5, p+2)
+        returns shape:
+        data: (p^2, 4, p+2), labels: (p^2)
         """
         # generate all p * p x-y pairs
         x = torch.arange(0, self.p)
@@ -41,23 +43,28 @@ class ModuloDataGenerator:
         labels = self.operation(x, y, mod=self.p)
         op = torch.zeros_like(x) + self.p
         eq = torch.zeros_like(x) + self.p + 1
-        data = torch.stack([x, op, y, eq, labels], dim=1)
+        data = torch.stack([x, op, y, eq], dim=1)
 
         # label them as one-hot vectors
         num_classes = self.p + 2
         data = F.one_hot(data, num_classes=num_classes)
 
-        return data
+        # cast data to float type
+        data = data.float()
 
-    def get_dataloader(self, alpha: float, batch_size: int=1):
+        return data, labels
+
+    def get_dataloader(self, alpha: float,
+                       batch_size: int=1,
+                       num_summands: int=2):
         """
         returns train loader and validation loader,
         split train and validation according to the ratio of alpha
         """
         if alpha < 0 or alpha > 1:
             raise ValueError("alpha must be between 0 and 1")
-        data = self.generate_data()
-        dataset = TensorDataset(data)
+        data, labels = self.generate_data(num_summands)
+        dataset = TensorDataset(data, labels)
 
         train_size = int(alpha * len(dataset))
         validation_size = len(dataset) - train_size
@@ -69,7 +76,7 @@ class ModuloDataGenerator:
         return train_loader, val_loader
 
 if __name__ == '__main__':
-    test_generator = ModuloDataGenerator('+', 19)
+    test_generator = ModuloDataGenerator(10)
     train_loader, val_loader = test_generator.get_dataloader(0.9)
     print("Training dataloader has length", len(train_loader))
     print("The first training sample is:")

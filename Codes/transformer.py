@@ -46,20 +46,20 @@ class SimpleTransformer(nn.Module):
         
         return output
 
-
+if __name__ == '__main__':
 # 配置模型参数
-input_dim = 10  # one-hot 编码的维度，假设有 10 个类
-model_dim = 64  # Transformer 中每层的维度
-num_heads = 8   # 自注意力机制的头数
-num_layers = 4  # Transformer 编码器的层数
-output_dim = 2  # 二分类问题
+    input_dim = 10  # one-hot 编码的维度，假设有 10 个类
+    model_dim = 64  # Transformer 中每层的维度
+    num_heads = 8   # 自注意力机制的头数
+    num_layers = 4  # Transformer 编码器的层数
+    output_dim = 2  # 二分类问题
 
 # 检查是否有可用的 GPU，如果有则使用 GPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
 
 # 创建模型实例
-model = SimpleTransformer(input_dim, model_dim, num_heads, num_layers, output_dim).to(device)
+    model = SimpleTransformer(input_dim, model_dim, num_heads, num_layers, output_dim).to(device)
 
 # 打印模型结构
-print(model)
+    print(model)
