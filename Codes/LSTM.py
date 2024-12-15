@@ -1,3 +1,7 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
 # 定义LSTM模型
 class LSTMClassifier(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes):

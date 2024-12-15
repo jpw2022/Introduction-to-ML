@@ -4,26 +4,29 @@ import torch.optim as optim
 
 from data import ModuloDataGenerator
 from transformer import SimpleTransformer
+from MLP import CustomMLP
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 # Problem setup
-p = 11
+p = 13
 num_summands = 2
 
 # Transformer hyper-parameters
 input_dim = p + 2
-d_model = 64
+d_model = 128
 n_heads = 8
-n_layers = 6
+n_layers = 4
 output_dim = p + 2
+seq_length = 2 * num_summands
 
-model = SimpleTransformer(input_dim, d_model, n_heads, n_layers, output_dim).to(device)
+#model = SimpleTransformer(input_dim, d_model, n_heads, n_layers, output_dim).to(device)
+model = CustomMLP(input_dim, [d_model * n_heads] * n_layers, output_dim,
+                  seq_length).to(device)
 
 # Data
 batch_size = 4
-seq_length = 2 * num_summands
 
 data_generator = ModuloDataGenerator(p)
 train_loader, val_loader = data_generator.get_dataloader(alpha=0.8, batch_size=batch_size)
@@ -81,7 +84,7 @@ def validate(model, val_loader, criterion, device):
     accuracy = correct / total * 100
     return avg_loss, accuracy
 
-num_epochs = 10
+num_epochs = 1000
 for epoch in range(num_epochs):
     train_loss, train_accuracy = train_one_epoch(model, train_loader, optimizer, criterion, device)
     val_loss, val_accuracy = validate(model, val_loader, criterion, device)

@@ -1,5 +1,9 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
 class CustomMLP(torch.nn.Module):
-    def __init__(self, input_size, hidden_sizes, output_size, activation=F.relu):
+    def __init__(self, input_size, hidden_sizes, output_size, seq_length, activation=F.relu):
         """
         初始化前馈神经网络
         
@@ -10,9 +14,10 @@ class CustomMLP(torch.nn.Module):
         activation (callable, optional): 激活函数，默认为ReLU
         """
         super(CustomMLP, self).__init__()
+        self.real_input_size = input_size * seq_length
         
         # 输入层到第一个隐藏层的权重和偏置
-        self.layers = nn.ModuleList([nn.Linear(input_size, hidden_sizes[0])])
+        self.layers = nn.ModuleList([nn.Linear(self.real_input_size, hidden_sizes[0])])
         
         # 添加所有隐藏层
         for i in range(1, len(hidden_sizes)):
@@ -33,6 +38,7 @@ class CustomMLP(torch.nn.Module):
         返回:
         torch.Tensor: 网络输出
         """
+        x = x.reshape(-1, self.real_input_size)
         for i, layer in enumerate(self.layers):
             x = layer(x)
             # 最后一层不应用激活函数
