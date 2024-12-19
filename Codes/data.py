@@ -26,7 +26,7 @@ class ModuloDataGenerator:
         self.p = modulo_number
 
     # TODO: write general code for num_summands > 2
-    def generate_data(self, num_summands: int=2) -> Tensor:
+    def generate_data(self, num_summands: int=2) -> tuple[Tensor]:
         """
         Generate inputs as one-hot vectors, labels are not one-hot encoded
         'op' and 'eq' are treated the same as numbers
@@ -64,11 +64,12 @@ class ModuloDataGenerator:
         if alpha < 0 or alpha > 1:
             raise ValueError("alpha must be between 0 and 1")
         data, labels = self.generate_data(num_summands)
+
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        data, labels = data.to(device), labels.to(device)
         dataset = TensorDataset(data, labels)
 
-        train_size = int(alpha * len(dataset))
-        validation_size = len(dataset) - train_size
-        train_set, val_set = random_split(dataset, [train_size, validation_size])
+        train_set, val_set = random_split(dataset, [alpha, 1-alpha])
 
         train_loader = DataLoader(train_set, batch_size, shuffle=True)
         val_loader = DataLoader(val_set, batch_size, shuffle=True)
@@ -78,7 +79,7 @@ class ModuloDataGenerator:
 if __name__ == '__main__':
     test_generator = ModuloDataGenerator(10)
     train_loader, val_loader = test_generator.get_dataloader(0.9)
-    print("Training dataloader has length", len(train_loader))
+    print("Training/validation size", len(train_loader), len(val_loader))
     print("The first training sample is:")
     for sample in train_loader:
         print(sample)

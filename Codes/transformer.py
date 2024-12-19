@@ -19,6 +19,7 @@ class SimpleTransformer(nn.Module):
         self.encoder_layer = nn.TransformerEncoderLayer(
             d_model=model_dim,  # 模型的维度
             nhead=num_heads,    # 自注意力机制中的头数
+            batch_first=True,
         )
         self.transformer_encoder = nn.TransformerEncoder(
             self.encoder_layer, num_layers=num_layers  # 编码器层数
@@ -32,14 +33,11 @@ class SimpleTransformer(nn.Module):
         # 先通过线性层将输入从 input_dim 映射到 model_dim
         x = self.input_fc(x)  # 现在的 x 形状是 (batch_size, seq_length, model_dim)
 
-        # 将输入转换为 (seq_length, batch_size, model_dim) 形式
-        x = x.permute(1, 0, 2)  # 转换为 (seq_length, batch_size, model_dim)
-
         # 使用 Transformer 编码器处理输入
         transformer_out = self.transformer_encoder(x)
 
         # 从 Transformer 输出中提取最后一个时刻的隐藏状态
-        output = transformer_out[-1, :, :]  # 取最后一个时间步，形状 (batch_size, model_dim)
+        output = transformer_out[:, -1, :]  # 取最后一个时间步，形状 (batch_size, model_dim)
 
         # 通过线性层输出最终的预测结果
         output = self.fc_out(output)  # 形状为 (batch_size, output_dim)
