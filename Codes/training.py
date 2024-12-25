@@ -4,7 +4,7 @@ import torch.optim as optim
 from tqdm import tqdm
 
 from data import ModuloDataGenerator
-from transformer import SimpleTransformer
+from transformer_pe import SimpleTransformer
 from MLP import CustomMLP
 import visualize as vis
 
@@ -89,7 +89,7 @@ print(f"Using device: {device}")
 p = 97
 num_summands = 2
 
-# Transformer hyper-parameters
+# Model hyper-parameters
 input_dim = p + 2
 d_model = 128
 n_heads = 4
@@ -107,12 +107,14 @@ batch_size = 256
 data_generator = ModuloDataGenerator(p)
 train_loader, val_loader = data_generator.get_dataloader(alpha=0.4, batch_size=batch_size)
 
+# Training
 criterion = nn.CrossEntropyLoss().to(device)
 optimizer = optim.AdamW(model.parameters(), lr=0.001)
 
 result = train(model, train_loader, val_loader,
               optimizer, criterion, num_epochs, device)
+train_loss, train_acc, val_loss, val_acc = result
 
 # plot and save the accuracy
-vis.plot_acc(result[1], result[3])
+vis.plot_acc(train_acc, val_acc)
 vis.save_fig("transformer_test.pdf")

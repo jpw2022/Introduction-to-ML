@@ -25,25 +25,36 @@ class ModuloDataGenerator:
         self.operation = OPERATION_DICT[operation_str]
         self.p = modulo_number
 
-    # TODO: write general code for num_summands > 2
-    def generate_data(self, num_summands: int=2) -> tuple[Tensor]:
+    def generate_data(self, num_summands: int=2,
+                      num_samples: int=0) -> tuple[Tensor]:
         """
         Generate inputs as one-hot vectors, labels are not one-hot encoded
         'op' and 'eq' are treated the same as numbers
+
         returns shape:
-        data: (p^2, 4, p+2), labels: (p^2)
+        data: (num_samples, 2*num_summands, p+2), labels: (num_samples)
+        if num_samples is not specified, it is by default p ** num_summands
         """
         # generate all p * p x-y pairs
-        x = torch.arange(0, self.p)
-        y = torch.arange(0, self.p)
-        x, y = torch.cartesian_prod(x, y).T
+        x = torch.arange(0, self.p).repeat(num_summands, 1)
+        # x has shape (num_summands, p)
+        x_combination = torch.cartesian_prod(*x).T
+        # shape (num_summands, p^num_summands), this may cause memory issue
+
+        # only take given number of samples
+        if num_samples:
+            idx = torch.randperm(x_combination.size(1))[:num_samples]
+            x_combination = x_combination[:, idx]
 
         # compute the label of 'x op y'
         # use p and p+1 to represent 'op' and 'eq'
-        labels = self.operation(x, y, mod=self.p)
-        op = torch.zeros_like(x) + self.p
-        eq = torch.zeros_like(x) + self.p + 1
-        data = torch.stack([x, op, y, eq], dim=1)
+        labels = self.operation(*x_combination, mod=self.p)
+        op = torch.zeros_like(x_combination[0]) + self.p
+        eq = torch.zeros_like(x_combination[0]) + self.p + 1
+        expression = [x_combination[k//2] if k % 2 == 0 else op
+                      for k in range(2 * num_summands - 1)]
+        expression.append(eq)
+        data = torch.stack(expression, dim=1)
 
         # label them as one-hot vectors
         num_classes = self.p + 2
@@ -56,20 +67,23 @@ class ModuloDataGenerator:
 
     def get_dataloader(self, alpha: float,
                        batch_size: int=1,
-                       num_summands: int=2):
+                       num_summands: int=2,
+                       num_samples: int=0) -> tuple[DataLoader]:
         """
-        returns train loader and validation loader,
+        returns train loader and validation loader with total length num_samples,
         split train and validation according to the ratio of alpha
         """
         if alpha < 0 or alpha > 1:
             raise ValueError("alpha must be between 0 and 1")
-        data, labels = self.generate_data(num_summands)
+        data, labels = self.generate_data(num_summands, num_samples)
 
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         data, labels = data.to(device), labels.to(device)
         dataset = TensorDataset(data, labels)
 
-        train_set, val_set = random_split(dataset, [alpha, 1-alpha])
+        train_length = int(alpha * len(dataset))
+        val_length = len(dataset) - train_length
+        train_set, val_set = random_split(dataset, [train_length, val_length])
 
         train_loader = DataLoader(train_set, batch_size, shuffle=True)
         val_loader = DataLoader(val_set, batch_size, shuffle=True)
@@ -77,8 +91,8 @@ class ModuloDataGenerator:
         return train_loader, val_loader
 
 if __name__ == '__main__':
-    test_generator = ModuloDataGenerator(10)
-    train_loader, val_loader = test_generator.get_dataloader(0.9)
+    test_generator = ModuloDataGenerator(7)
+    train_loader, val_loader = test_generator.get_dataloader(0.9, 1, 4)
     print("Training/validation size", len(train_loader), len(val_loader))
     print("The first training sample is:")
     for sample in train_loader:
