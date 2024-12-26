@@ -6,7 +6,7 @@ from tqdm import tqdm
 from data import ModuloDataGenerator
 from transformer_pe import SimpleTransformer
 from MLP import CustomMLP
-import visualize as vis
+from LSTM import LSTMClassifier
 
 
 def train_one_epoch(model, train_loader, optimizer, criterion, device):
@@ -82,39 +82,53 @@ def train(model: nn.Module,
 
     return train_loss, train_acc, val_loss, val_acc
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
+def train_by_args(args):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
 
-# Problem setup
-p = 97
-num_summands = 2
+    # Problem setup
+    p = args.p
+    num_summands = args.k
 
-# Model hyper-parameters
-input_dim = p + 2
-d_model = 128
-n_heads = 4
-n_layers = 2
-output_dim = p + 2
-seq_length = 2 * num_summands
+    # Model hyper-parameters
+    input_dim = p + 2
+    d_model = args.d_model
+    n_heads = args.n_heads
+    n_layers = args.n_layers
+    output_dim = p + 2
+    seq_length = 2 * num_summands
 
-model = SimpleTransformer(input_dim, d_model, n_heads, n_layers, output_dim).to(device)
-#model = CustomMLP(input_dim, [d_model * n_heads] * n_layers, output_dim, seq_length).to(device)
+    if args.model == "transformer":
+        model = SimpleTransformer(input_dim, d_model, n_heads,
+                                  n_layers, output_dim).to(device)
+    elif args.model == "MLP":
+        model = CustomMLP(input_dim, [d_model * n_heads] * n_layers,
+                          output_dim, seq_length).to(device)
+    elif args.model == "LSTM":
+        model = LSTMClassifier(input_dim, d_model * n_heads, n_layers,
+                               output_dim).to(device)
+    else:
+        raise ValueError(f"""Unkown model type: {args.model}, only supports
+                         transformer, MLP, LSTM.""")
 
-# Data
-num_epochs = 1000
-batch_size = 256
+    # Data
+    num_epochs = args.n_epochs
+    batch_size = args.batch_size
+    alpha = args.alpha
+    n_samples = args.n_samples
 
-data_generator = ModuloDataGenerator(p)
-train_loader, val_loader = data_generator.get_dataloader(alpha=0.4, batch_size=batch_size)
+    data_generator = ModuloDataGenerator(p)
+    train_loader, val_loader = data_generator.get_dataloader(alpha,
+                                                             batch_size,
+                                                             num_summands,
+                                                             n_samples)
 
-# Training
-criterion = nn.CrossEntropyLoss().to(device)
-optimizer = optim.AdamW(model.parameters(), lr=0.001)
+    # Training
+    lr = args.lr
+    criterion = nn.CrossEntropyLoss().to(device)
+    optimizer = optim.AdamW(model.parameters(), lr=lr)
 
-result = train(model, train_loader, val_loader,
-              optimizer, criterion, num_epochs, device)
-train_loss, train_acc, val_loss, val_acc = result
+    result = train(model, train_loader, val_loader,
+                  optimizer, criterion, num_epochs, device)
+    return result
 
-# plot and save the accuracy
-vis.plot_acc(train_acc, val_acc)
-vis.save_fig("transformer_test.pdf")

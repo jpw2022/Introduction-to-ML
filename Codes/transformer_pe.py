@@ -5,13 +5,13 @@ from torch.utils.data import DataLoader, TensorDataset
 
 # 定义 Positional Encoding 类
 class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=5000):
+    def __init__(self, d_model, max_len=500):
         super(PositionalEncoding, self).__init__()
         
         # 创建一个位置编码的矩阵
         pe = torch.zeros(max_len, d_model)
         position = torch.arange(0, max_len).unsqueeze(1).float()
-        div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(torch.log(10000.0) / d_model))
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(10.0 / d_model))
         
         pe[:, 0::2] = torch.sin(position * div_term)  # 偶数维度使用 sin
         pe[:, 1::2] = torch.cos(position * div_term)  # 奇数维度使用 cos
