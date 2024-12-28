@@ -17,6 +17,11 @@ def get_parser():
                         help='batch size for training the model')
     parser.add_argument('--n_epochs', type=int, default=1000,
                         help='number of epochs for training the model')
+    parser.add_argument('--optimizer', type=str, default='AdamW',
+                        help='optimizer for training')
+
+    parser.add_argument('--ckpt', type=str,
+                        help='model checkpoint file used for training')
 
     # Data arguments
     parser.add_argument('--p', type=int, default=97,

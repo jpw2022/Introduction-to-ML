@@ -83,6 +83,9 @@ def train(model: nn.Module,
     return train_loss, train_acc, val_loss, val_acc
 
 def train_by_args(args):
+    """
+    Training using arguments from command line
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
@@ -102,10 +105,10 @@ def train_by_args(args):
         model = SimpleTransformer(input_dim, d_model, n_heads,
                                   n_layers, output_dim).to(device)
     elif args.model == "MLP":
-        model = CustomMLP(input_dim, [d_model * n_heads] * n_layers,
+        model = CustomMLP(input_dim, [d_model * 4] * n_layers,
                           output_dim, seq_length).to(device)
     elif args.model == "LSTM":
-        model = LSTMClassifier(input_dim, d_model * n_heads, n_layers,
+        model = LSTMClassifier(input_dim, d_model * 4, n_layers,
                                output_dim).to(device)
     else:
         raise ValueError(f"""Unkown model type: {args.model}, only supports
@@ -126,7 +129,19 @@ def train_by_args(args):
     # Training
     lr = args.lr
     criterion = nn.CrossEntropyLoss().to(device)
-    optimizer = optim.AdamW(model.parameters(), lr=lr)
+    optim_str = args.optimizer
+    if optim_str == 'AdamW':
+        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=(0.9, 0.98),
+                                weight_decay=0.05)
+    elif optim_str == 'Adam':
+        optimizer = optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.98))
+    elif optim_str == 'SGD':
+        optimizer = optim.SGD(model.parameters(), lr=lr)
+    elif optim_str == 'SGD_nesternov':
+        optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9,
+                              nesterov=True)
+    else:
+        raise ValueError(f"Unknown optimizer: {optim_str}")
 
     result = train(model, train_loader, val_loader,
                   optimizer, criterion, num_epochs, device)
