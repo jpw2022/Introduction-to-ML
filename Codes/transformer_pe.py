@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
-# 定义 Positional Encoding 类
+# Define Positional Encoding class
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, max_len=500):
         super(PositionalEncoding, self).__init__()
