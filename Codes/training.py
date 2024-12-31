@@ -143,7 +143,29 @@ def train_by_args(args):
     else:
         raise ValueError(f"Unknown optimizer: {optim_str}")
 
+    # load model check point
+    if args.ckpt:
+        ckpt = torch.load("./ckpt/" + args.ckpt + ".model", weights_only=True)
+        model.load_state_dict(ckpt['model_state'])
+        optimizer.load_state_dict(ckpt['optim_state'])
+        loss_hist = ckpt['loss_hist']
+
     result = train(model, train_loader, val_loader,
                   optimizer, criterion, num_epochs, device)
+    
+    # concatenate loss history
+    if args.ckpt:
+        tmp_record = []
+        for record_old, record_new in zip(loss_hist, result):
+            record = record_old + record_new
+            tmp_record.append(record)
+        result = tuple(tmp_record)
+
+    if args.ckpt_out:
+        torch.save({
+                    'model_state': model.state_dict(),
+                    'optim_state': optimizer.state_dict(),
+                    'loss_hist': result,
+                    }, "./ckpt/" + args.ckpt_out + ".model")
     return result
 

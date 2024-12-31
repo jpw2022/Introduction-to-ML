@@ -16,5 +16,12 @@ result = tr.train_by_args(args)
 train_loss, train_acc, val_loss, val_acc = result
 
 # plot and save the accuracy
-vis.plot_acc(train_acc, val_acc)
-vis.save_fig(args.out)
+if args.out:
+    vis.plot_acc(train_acc, val_acc)
+    vis.save_fig(args.out)
+if args.save_val:
+    torch.save({
+                'val_acc': val_acc,
+                'step_per_epoch': int(args.alpha * args.p ** args.k / args.batch_size),
+                'alpha': args.alpha,
+                }, "./ckpt/" + args.save_val + ".val")

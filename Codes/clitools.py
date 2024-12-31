@@ -22,6 +22,10 @@ def get_parser():
 
     parser.add_argument('--ckpt', type=str,
                         help='model checkpoint file used for training')
+    parser.add_argument('--ckpt_out', type=str,
+                        help='model checkpoint file saved after training')
+    parser.add_argument('--save_val', type=str,
+                        help='validation accuracy file saved after training')
 
     # Data arguments
     parser.add_argument('--p', type=int, default=97,
