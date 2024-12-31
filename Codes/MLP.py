@@ -5,10 +5,9 @@ import torch.nn.functional as F
 class CustomMLP(torch.nn.Module):
     def __init__(self, input_size, hidden_sizes, output_size, seq_length, activation=F.relu):
         """
-        初始化前馈神经网络
         
-        参数:
-        input_size (int): 输入层大小
+        parameters:
+        input_size (int): imput
         hidden_sizes (list of int): 隐藏层大小列表
         output_size (int): 输出层大小
         activation (callable, optional): 激活函数，默认为ReLU
