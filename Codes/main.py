@@ -2,6 +2,7 @@ import training as tr
 import visualize as vis
 import clitools as cli
 
+import torch
 import os
 
 parser = cli.get_parser()
