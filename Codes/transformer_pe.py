@@ -8,19 +8,19 @@ class PositionalEncoding(nn.Module):
     def __init__(self, d_model, max_len=500):
         super(PositionalEncoding, self).__init__()
         
-        # 创建一个位置编码的矩阵
+        # create the position encoding matrix
         pe = torch.zeros(max_len, d_model)
         position = torch.arange(0, max_len).unsqueeze(1).float()
         div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(10.0 / d_model))
         
-        pe[:, 0::2] = torch.sin(position * div_term)  # 偶数维度使用 sin
-        pe[:, 1::2] = torch.cos(position * div_term)  # 奇数维度使用 cos
+        pe[:, 0::2] = torch.sin(position * div_term)  # even: sin
+        pe[:, 1::2] = torch.cos(position * div_term)  # odd: cos
         
-        pe = pe.unsqueeze(0)  # 在第一个维度添加 batch size 维度
+        pe = pe.unsqueeze(0)  # the first dimension: batch size 
         self.register_buffer('pe', pe)
 
     def forward(self, x):
-        # x 的形状是 (batch_size, seq_length, d_model)
+        # shape of x: (batch_size, seq_length, d_model)
         seq_len = x.size(1)
         return x + self.pe[:, :seq_len]
 
