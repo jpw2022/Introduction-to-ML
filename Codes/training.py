@@ -7,6 +7,8 @@ from data import ModuloDataGenerator
 from transformer_pe import SimpleTransformer
 from MLP import CustomMLP
 from LSTM import LSTMClassifier
+from GrokFast import GrokFast
+from Adam_dropout import Adam_dropout
 
 
 def train_one_epoch(model, train_loader, optimizer, criterion, device):
