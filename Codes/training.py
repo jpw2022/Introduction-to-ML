@@ -137,7 +137,7 @@ def train_by_args(args):
         optimizer = optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.98))
     elif optim_str == 'SGD':
         optimizer = optim.SGD(model.parameters(), lr=lr)
-    elif optim_str == 'SGD_nesternov':
+    elif optim_str == 'SGD_nesterov':
         optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9,
                               nesterov=True)
     else:

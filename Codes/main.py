@@ -18,7 +18,8 @@ train_loss, train_acc, val_loss, val_acc = result
 
 # plot and save the accuracy
 if args.out:
-    vis.plot_acc(train_acc, val_acc)
+    #vis.plot_acc(train_acc, val_acc)
+    vis.plot_acc(train_acc[2000:], val_acc[2000:])
     vis.save_fig(args.out)
 if args.save_val:
     torch.save({

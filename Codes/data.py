@@ -38,13 +38,13 @@ class ModuloDataGenerator:
         # generate all p * p x-y pairs
         x = torch.arange(0, self.p).repeat(num_summands, 1)
         # x has shape (num_summands, p)
-        x_combination = torch.cartesian_prod(*x).T
-        # shape (num_summands, p^num_summands), this may cause memory issue
-
-        # only take given number of samples
         if num_samples:
-            idx = torch.randperm(x_combination.size(1))[:num_samples]
-            x_combination = x_combination[:, idx]
+            idx = torch.randint(0, self.p ** num_summands, size=(num_samples,))
+            components = [(idx / self.p**k).long() % self.p for k in range(num_summands)]
+            x_combination = torch.stack(components)
+        else:
+            x_combination = torch.cartesian_prod(*x).T
+        # shape (num_summands, p^num_summands), this may cause memory issue
 
         # compute the label of 'x op y'
         # use p and p+1 to represent 'op' and 'eq'
