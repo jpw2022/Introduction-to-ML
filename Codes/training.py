@@ -144,7 +144,7 @@ def train_by_args(args):
                               nesterov=True)
     elif optim_str == 'grokfast':
         optimizer = GrokFast(model.parameters(), lr=lr, momentum=0, dampening=0,
-                     weight_decay=0.0, nesterov=False, window_size=100, lamb=5.0,
+                     weight_decay=0.01, nesterov=False, window_size=100, lamb=5.0,
                      filter_type='mean', use_grad_filter=True)
     elif optim_str == 'Adam_dropout':
         optimizer = Adam_dropout(model.parameters(), lr=lr, betas=(0.9, 0.98), dropout = 0.1)

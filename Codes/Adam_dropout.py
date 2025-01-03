@@ -23,7 +23,7 @@ class Adam_dropout(torch.optim.Optimizer):
                 if p.grad is None:
                     continue
                 
-                if group['dropout'] > 0.0 and self.training:
+                if group['dropout'] > 0.0:
                     mask = torch.rand_like(p.grad, dtype=torch.float32) > group['dropout']
                     p.grad.mul_(mask)
 
