@@ -1,37 +1,43 @@
-\documentclass{article}
-
-
+\documentclass[UTF8]{article}
+\usepackage{ctex}
 % if you need to pass options to natbib, use, e.g.:
-%     \PassOptionsToPackage{numbers, compress}{natbib}
+%\PassOptionsToPackage{numbers, compress}{natbib}
 % before loading neurips_2022
 
-
+\usepackage{setspace}
+\singlespacing
 % ready for submission
-\usepackage{neurips_2022}
+%\usepackage{neurips_2022}
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
 % [preprint] option:
-%     \usepackage[preprint]{neurips_2022}
-
+\usepackage[preprint]{neurips_2022}
 
 % to compile a camera-ready version, add the [final] option, e.g.:
-%     \usepackage[final]{neurips_2022}
+%\usepackage[final]{neurips_2022}
 
 
 % to avoid loading the natbib package, add option nonatbib:
-%    \usepackage[nonatbib]{neurips_2022}
-
+%\usepackage[nonatbib]{neurips_2022}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
-\usepackage{url}            % simple URL typesetting
+\usepackage{url}            % simple URL typesetting          
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{xcolor}
 
+\captionsetup[figure]{name=Figure}
+\renewcommand{\refname}{References}
 
 \title{Penetrating the "Grokking" Phenomenon}
 
@@ -45,35 +51,19 @@
 % \AND instead of \And before the third author name.
 
 
-\author{%
-  David S.~Hippocampus\thanks{Use footnote for providing further information
-    about author (webpage, alternative address)---\emph{not} for acknowledging
-    funding agencies.} \\
-  Department of Computer Science\\
-  Cranberry-Lemon University\\
-  Pittsburgh, PA 15213 \\
-  \texttt{hippo@cs.cranberry-lemon.edu} \\
+\author{
+  陈风凌 \\
+  School of Mathematical Sciences\\
+  Student id: \texttt{2200010890}
   % examples of more authors
-  % \And
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
-  % \AND
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
-  % \And
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
-  % \And
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
+  \And
+  贾沛文 \\
+  Guanghua School of Management \\
+  Student id: \texttt{2201111026}
+  \AND
+  汪晨阳 \\
+  School of Mathematical Sciences\\
+  Student id: \texttt{2200010865}
 }
 
 
@@ -84,505 +74,304 @@
 
 
 \begin{abstract}
-  The abstract paragraph should be indented \nicefrac{1}{2}~inch (3~picas) on
-  both the left- and right-hand margins. Use 10~point type, with a vertical
-  spacing (leading) of 11~points.  The word \textbf{Abstract} must be centered,
-  bold, and in point size 12. Two line spaces precede the abstract. The abstract
-  must be limited to one paragraph.
+  This article is concerned about the Grokking phenomenon in the learning of modular addition. Starting from transformer models with AdamW optimizer, we perform experiments investigate the effect of training fraction on the training and validation accuracy. Other model structures, optimizers and regularization techniques are considered. We also explore Grokking in multivariate modular addition. Lastly, we adopt the Grokfast algorithm and provide a possible explanation of Grokking. 
+  The code of our experiments can be accessed at
+  \href{https://github.com/jpw2022/Introduction-to-ML}{our github repository}.
 \end{abstract}
 
-
-\section{Submission of papers to NeurIPS 2022}
-
-
-Please read the instructions below carefully and follow them faithfully.
-
-
-\subsection{Style}
-
-
-Papers to be submitted to NeurIPS 2022 must be prepared according to the
-instructions presented here. Papers may only be up to {\bf nine} pages long,
-including figures. Additional pages \emph{containing only acknowledgments and
-references} are allowed. Papers that exceed the page limit will not be
-reviewed, or in any other way considered for presentation at the conference.
-
-
-The margins in 2022 are the same as those in 2007, which allow for $\sim$$15\%$
-more words in the paper compared to earlier years.
-
-
-Authors are required to use the NeurIPS \LaTeX{} style files obtainable at the
-NeurIPS website as indicated below. Please make sure you use the current files
-and not previous versions. Tweaking the style files may be grounds for
-rejection.
-
-
-\subsection{Retrieval of style files}
-
-
-The style files for NeurIPS and other conference information are available on
-the World Wide Web at
-\begin{center}
-  \url{http://www.neurips.cc/}
-\end{center}
-The file \verb+neurips_2022.pdf+ contains these instructions and illustrates the
-various formatting requirements your NeurIPS paper must satisfy.
-
-
-The only supported style file for NeurIPS 2022 is \verb+neurips_2022.sty+,
-rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{} 2.09,
-  Microsoft Word, and RTF are no longer supported!}
-
-
-The \LaTeX{} style file contains three optional arguments: \verb+final+, which
-creates a camera-ready copy, \verb+preprint+, which creates a preprint for
-submission to, e.g., arXiv, and \verb+nonatbib+, which will not load the
-\verb+natbib+ package for you in case of package clash.
-
-
-\paragraph{Preprint option}
-If you wish to post a preprint of your work online, e.g., on arXiv, using the
-NeurIPS style, please use the \verb+preprint+ option. This will create a
-nonanonymized version of your work with the text ``Preprint. Work in progress.''
-in the footer. This version may be distributed as you see fit. Please \textbf{do
-  not} use the \verb+final+ option, which should \textbf{only} be used for
-papers accepted to NeurIPS.
-
-
-At submission time, please omit the \verb+final+ and \verb+preprint+
-options. This will anonymize your submission and add line numbers to aid
-review. Please do \emph{not} refer to these line numbers in your paper as they
-will be removed during generation of camera-ready copies.
-
-
-The file \verb+neurips_2022.tex+ may be used as a ``shell'' for writing your
-paper. All you have to do is replace the author, title, abstract, and text of
-the paper with your own.
-
-
-The formatting instructions contained in these style files are summarized in
-Sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
-
-
-\section{General formatting instructions}
-\label{gen_inst}
-
-
-The text must be confined within a rectangle 5.5~inches (33~picas) wide and
-9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).  Use 10~point
-type with a vertical spacing (leading) of 11~points.  Times New Roman is the
-preferred typeface throughout, and will be selected for you by default.
-Paragraphs are separated by \nicefrac{1}{2}~line space (5.5 points), with no
-indentation.
-
-
-The paper title should be 17~point, initial caps/lower case, bold, centered
-between two horizontal rules. The top rule should be 4~points thick and the
-bottom rule should be 1~point thick. Allow \nicefrac{1}{4}~inch space above and
-below the title to rules. All pages should start at 1~inch (6~picas) from the
-top of the page.
-
-
-For the final version, authors' names are set in boldface, and each name is
-centered above the corresponding address. The lead author's name is to be listed
-first (left-most), and the co-authors' names (if different address) are set to
-follow. If there is only one co-author, list both author and co-author side by
-side.
-
-
-Please pay special attention to the instructions in Section \ref{others}
-regarding figures, tables, acknowledgments, and references.
-
-
-\section{Headings: first level}
-\label{headings}
-
-
-All headings should be lower case (except for first word and proper nouns),
-flush left, and bold.
-
-
-First-level headings should be in 12-point type.
-
-
-\subsection{Headings: second level}
-
-
-Second-level headings should be in 10-point type.
-
-
-\subsubsection{Headings: third level}
-
-
-Third-level headings should be in 10-point type.
-
-
-\paragraph{Paragraphs}
-
-
-There is also a \verb+\paragraph+ command available, which sets the heading in
-bold, flush left, and inline with the text, with the heading followed by 1\,em
-of space.
-
-
-\section{Citations, figures, tables, references}
-\label{others}
-
-
-These instructions apply to everyone.
-
-
-\subsection{Citations within the text}
-
-
-The \verb+natbib+ package will be loaded for you by default.  Citations may be
-author/year or numeric, as long as you maintain internal consistency.  As to the
-format of the references themselves, any style is acceptable as long as it is
-used consistently.
-
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations appropriate for
-use in inline text.  For example,
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-produces
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-
-If you wish to load the \verb+natbib+ package with options, you may add the
-following before loading the \verb+neurips_2022+ package:
-\begin{verbatim}
-   \PassOptionsToPackage{options}{natbib}
-\end{verbatim}
-
-
-If \verb+natbib+ clashes with another package you load, you can add the optional
-argument \verb+nonatbib+ when loading the style file:
-\begin{verbatim}
-   \usepackage[nonatbib]{neurips_2022}
-\end{verbatim}
-
-
-As submission is double blind, refer to your own published work in the third
-person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
-previous work [4].'' If you cite your other papers that are not widely available
-(e.g., a journal paper under review), use anonymous author names in the
-citation, e.g., an author of the form ``A.\ Anonymous.''
-
-
-\subsection{Footnotes}
-
-
-Footnotes should be used sparingly.  If you do require a footnote, indicate
-footnotes with a number\footnote{Sample of the first footnote.} in the
-text. Place the footnotes at the bottom of the page on which they appear.
-Precede the footnote with a horizontal rule of 2~inches (12~picas).
-
-
-Note that footnotes are properly typeset \emph{after} punctuation
-marks.\footnote{As in this example.}
-
-
-\subsection{Figures}
-
-
-\begin{figure}
+\paragraph{Keywords} Grokking; modular addition; Grokfast; transformer; Adam
+
+\section{Introduction}
+In machine learning, the ``Grokking'' phenomenon refers to a sudden, unexpected breakthrough in the model's learning process, typically occurring when the model reaches a very low training error. It often appears as a sudden, dramatic improvement in performance after a period of seemingly slow learning. This phenomenon is particularly surprising because, before grokking, the model might have struggled with overfitting or faced training challenges, and after grokking, it generally performs exceptionally well. In short, grokking is when a model "suddenly gets it" and improves significantly, often exceeding expectations, see, for example, \cite{power2022grokking}, \cite{lee2024grokfast}, \cite{mohamadi2024you}, \cite{kumar2023grokking} and 
+\cite{lyu2023dichotomy}. 
+
+In this paper, we aim to investigate the Grokking phenomenon in the learning of modular addition. We will replicate some results in \cite{power2022grokking} via various models, optimizers and regularization techniques. After that, some discussion on Grokking is provided. 
+ 
+
+\section{The problem and data}
+Formally, we want to explore the learning of (binary) modular addition
+\begin{equation*}
+(x,y) \mapsto x+y~ \mathrm{mod} ~ p, \quad \text{for}~ x,y \in \mathbb{Z}_p.
+\end{equation*}  
+
+Each token ``$x$'', ``$+$'', ``$y$'', ``$=$'' and the outcome ``$x+y~ \mathrm{mod} ~ p$'' is embedded into a one-hot vector with length $p+2$. Here the dimension $p+2$ is due to the additional tokens ``$+$'' and ``$=$'', which are embedded as $(0,\ldots,1,0)_{1\times (p+2)}$ and $(0,\ldots,0,1)_{1\times (p+2)}$ repectively. Here is a toy example of $p=3$. Let $x=1$, $y=2$, then ``$x$'', ``$+$'', ``$y$'', ``$=$'' and ``$x+y~ \mathrm{mod} ~ p $'' (i.e. ``$0$'') are encoded as $(0,1,0,0,0)$, $(0,0,0,1,0)$, $(0,0,1,0,0)$, $(0,0,0,0,1)$ and $(1,0,0,0,0)$, respectively. The size of total data is $p^2$. We choose $p=97$ here and afterwards without loss of generality, while larger $p$ corresponds a harder problem.
+
+\section{Experiments}
+
+\subsection{Grokking for transformer models}\label{section_transformer}
+
+We first study the impact of the fraction of training set $\alpha \in (0,1)$ on
+the Grokking phenomenon for transformer models using the AdamW optimizer
+with weight decay $0.05$ and learning rate $10^{-3}$.
+Specifically, the transformer model used has  2 layers and 4 attention heads.
+The embedding dimension is 128, and the batchsize set as 256.
+Figure \ref{transformer} plots the relationship the
+training/validation accuracy and the number of epochs corresponding to $\alpha
+\in \{0.3,0.4,0.5,0.7\}$. The Grokking phenomenon does occur such that both
+training and validation accuracy rise quickly after a long while of slow
+learning, and the validation accuracy starts to rise after the training one
+begins.
+
+The effects of training fraction $\alpha$ can also be found from the
+four pictures. On the one hand, larger $\alpha$ leads to faster Grokking. For
+instance, when $\alpha=0.3$, it takes more than $10^3$ epochs before the
+validation accuracy starts to rise, whereas, in comparison, it only takes about
+100 epochs when
+$\alpha=0.5$. On the other hand, the gap between the training and validation accuracy is narrowed with the increase of $\alpha$. A notable evidence is that when $\alpha$ reaches 0.7, the two accuracy curves seem to rise simultaneously.
+
+\begin{figure}[htb]
+  \vspace{-6mm}
   \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
+  %\includegraphics[width=3in]{fig5}
+  \subfloat[Training and validation accuracy\\ with $\alpha=0.3$ ]{
+      \includegraphics[width=0.5\textwidth]{alpha=0.3.pdf}}
+  \subfloat[Training and validation accuracy\\ with $\alpha=0.4$]{
+      \includegraphics[width=0.5\textwidth]{alpha=0.4.pdf}}
+  \\
+  \subfloat[Training and validation accuracy\\ with $\alpha=0.5$ \label{transformer_0.5}]{
+      \includegraphics[width=0.5\textwidth]{alpha=0.5.pdf}} 
+  \subfloat[Training and validation accuracy\\ with $\alpha=0.7$]{
+      \includegraphics[width=0.5\textwidth]{alpha=0.7.pdf}}
+  \caption{Grokking phenomenon on transformer model with different training fraction $\alpha$}
+  \label{transformer}
+\end{figure}
+  
+
+\subsection{Grokking with other network achitectures}
+
+In order to investigate the Grokking on other models, we perform the same experiments with MLP and LSTM. The MLP and LSTM both have two hidden layers of dimension 512. The batchsize dimension and the learning rate mainly follow the settings in Section \ref{section_transformer} for the convenience of comparison. The training and validation accuracy for MLP and LSTM with $\alpha=0.5$ are displayed in Figure \ref{mlplstm}. The Grokking phenomenon also appears in the two models we consider. In contrast to transformer models with the same $\alpha=0.5$ in Figure \ref{transformer_0.5}, it takes fewer epochs before the training accuracy begins to rise, while it is the opposite case for validation accuracy. Moreover, the validation accuracy of these two models increases with significant fluctuations, indicating unstable generalization ability.
+
+\begin{figure}[htb]
+  \centering
+  \vspace{-6mm}
+  %\includegraphics[width=3in]{fig5}
+  \subfloat[Training and validation accuracy of MLP\\ with $\alpha=0.5$ ]{
+      \includegraphics[width=0.5\textwidth]{mlp_0.5.pdf}}
+  \subfloat[Training and validation accuracy of LSTM\\ with $\alpha=0.5$]{
+      \includegraphics[width=0.5\textwidth]{lstm_0.5.pdf}}
+  \caption{Grokking phenomenon on MLP and LSTM with $\alpha=0.5$}
+  \label{mlplstm}
+\end{figure}
+
+\subsection{The effects of different optimizers and regularization techniques}
+In this section, we will focus on the impact of optimizers and regularization
+techniques on Grokking for transformer models. For  optimizers, we consider SGD
+and SGD with Nesterov momentum (where we set the momentum parameter as
+0.9) as competitors against Adam. The maximum validation accuracy with different
+training fraction $\alpha$ within an optimization budget of $8000$ steps with
+batch size $256$ is plotted in Figure \ref{optimizers}.
+
+It is shown that in
+contrast with Adam, the validation accuracy with SGD and SGD nesterov remains at a relatively low level within the optimization budget we consider for each $\alpha$. This is mainly because Adam can quickly adapt and adjust parameters in the early stages of training, it typically converges to a better solution faster than SGD. Besides, Adam has better adaptability to gradient noise and sparse gradients, making the training process more stable.
+
+\begin{figure}[H]
+  \centering
+  \vspace{-6mm}
+  %\includegraphics[width=3in]{fig5}
+  \subfloat[Adam]{
+      \includegraphics[width=0.35\textwidth ]{Adam_summary.pdf}\label{Adam}}
+  \subfloat[SGD]{
+      \includegraphics[width=0.35\textwidth ]{SGD_summary.pdf}}
+  \subfloat[SGD nesterov]{
+      \includegraphics[width=0.35\textwidth ]{SGD_nesterov_summary.pdf}}
+  \caption{The maximum
+  validation accuracy with different optimizers within an optimization budget of
+$8000$ steps}
+  \label{optimizers} 
+\end{figure}
+
+For the regularization techniques, we consider weight decay of $0.05$ (i.e, AdamW) and dropout (with probability 0.1) for transformer models with Adam optimizer. The corresponding results can be found in Figure \ref{regularization}. Compared with Adam in Figure \ref{Adam}, AdamW (Figure \ref{AdamW}) improves the validation accuracy at $\alpha=0.3$ and $0.8$, while Adam with dropout (Figure \ref{Adamdropout}) performs better at $\alpha=0.8$ but worse at $\alpha=0.5$ and $0.6$.
+
+\begin{figure}[H]
+  \centering
+  \vspace{-6mm}
+  %\includegraphics[width=3in]{fig5}
+  \subfloat[AdamW]{
+      \includegraphics[width=0.35\textwidth ]{AdamW_summary.pdf}\label{AdamW}}
+  \subfloat[Adam with dropout]{
+      \includegraphics[width=0.35\textwidth ]{Adam_dropout_summary.pdf}\label{Adamdropout}}
+  \caption{The maximum
+  validation accuracy with different regularization techniques within an
+optimization budget of $8000$ steps}
+  \label{regularization} 
+\end{figure}
+
+In addition, we also conider the Grokfast algorithm introduced by \cite{lee2024grokfast}, which is detailed as Algorithm \ref{algorithm_Grokfast}. Grokfast can simultaneously implement momentum, weight decay, and the filtering. In our experiments, the initial parameters window size $w$ and scalar factor $\lambda$ are set according to the values in \cite{lee2024grokfast}. Figure plots \ref{grokfast} the training and validation accuracy with Grokfast. In fact, Grokfast without filter (Figure \ref{grokfast_nofilter}) is analogous to AdamW, and the filter (Figure \ref{grokfast_filter})
+accelerates the generalization.
+
+\begin{algorithm}[H] \label{algorithm_Grokfast}
+  \caption{\textsc{Grokfast}}
+  \textbf{Param:} window size $w$, scalar factor $\lambda$.\\
+  \textbf{Input:} initial parameters $\theta_0$, stochastic objective function $f(\theta)$, optimizer's parameter update $u(g, t)$ from gradient $g$ at timestep $t$.\\
+  \textbf{begin:} $t \gets 0$ ; $Q \gets$ Queue(capacity = $w$)\;
+  \While{$\theta_t$ not converged}{
+      $t \gets t + 1$\;
+      $g_t \gets \nabla_\theta f(\theta_{t-1})$ \tcp*[r]{Calculate gradients}
+      Insert$(Q, g_t)$ \tcp*[r]{Insert gradients to $Q$}
+      $\hat{g}_t \gets g_t + \lambda \cdot \text{Avg}(Q)$ \tcp*[r]{Filter gradients}
+      $\hat{u}_t \gets u(\hat{g}_t, t)$ \tcp*[r]{Calculate update}
+      $\theta_t \gets \theta_{t-1} + \hat{u}_t$ \tcp*[r]{Update parameters}
+  }
+  \textbf{end while}.
+  \end{algorithm}
+  
+  \begin{figure}[H]
+    \centering
+    \vspace{-6mm}
+    %\includegraphics[width=3in]{fig5}
+    \subfloat[Grokfast with fliter]{
+        \includegraphics[width=0.5\textwidth]{grokfast with fliter.pdf}\label{grokfast_filter}}
+    \subfloat[Grokfast without fliter]{
+        \includegraphics[width=0.5\textwidth]{grokfast without fliter.pdf}\label{grokfast_nofilter}}
+    \caption{Training and validation accuracy with Grokfast for $\alpha=0.5$}
+    \label{grokfast}
+  \end{figure}
+
+\subsection{A harder problem: multivariate modular addition}
+In this section we consider the learning of multivariate modular addition as an extention. Specifically, the problem is
+\begin{equation*}
+  (x_1,\ldots,x_K) \mapsto \left(\sum_{k=1}^K x_k \right)~ \mathrm{mod} ~ p, 
+\end{equation*}
+where $x_k \in [p]$ for $k=1,\ldots,K$. Our goal is to find the influence of the
+dimension $K$ on the Grokking phenomenon. We use the same transformer model as
+set in Section \ref{section_transformer}. To start, we first consider the case $K=3$.
+
+Figure \ref{K=3} shows the training and validation accuracy with and without
+pretraining. We pretrain the model on $K=2$ data for $2000$ epochs,
+and then use a $K=3$ dataset of size $10^4$ to train another $2000$ epochs.
+Figures \ref{k3_p97-pre} shows the accuracy of total $4000$ epochs,
+while \ref{k3_p97-pre_2} shows the last $2000$ epochs after pretraining.
+In order to conduct a fair comparision, for unpretrained model we used
+two different $K=3$ dataset of size $10^4$ and train the model on each dataset
+for $2000$ epochs.
+
+For unpretrained models, we do not see Grokking for the validation
+accuracy within the range of epochs in Figure \ref{k3_nonpre}, while the
+training accuracy does grok (the breakpoint is a checkpoint, and so is the
+breakpoint in Figure \ref{k3_p97-pre}). On the contrary, for pretrained models,
+we can see the Grokking phonomenon within fewer epochs for both training and
+validation accuracy, see Figures \ref{k3_p97-pre} and
+\ref{k3_p97-pre_2}. Besides, when $K=2$ is
+pretrained, the validation accuracy even groks faster than the training
+accuracy. Therefore, the pretraining of smaller $K$ will be helpful for the
+learning of larger $K$.
+
+\begin{figure}[H]
+  \centering
+  %\includegraphics[width=3in]{fig5}
+  \subfloat[Training and validation accuracy\\ without pretrained ]{
+      \includegraphics[width=0.35\textwidth]{k3_p97.pdf}\label{k3_nonpre}}
+  \subfloat[Training and validation accuracy\\ with $K=2$ pretrained]{
+      \includegraphics[width=0.35\textwidth]{k3_p97-pre.pdf}\label{k3_p97-pre}}
+  \subfloat[Training and validation accuracy\\ after pretraining]{
+      \includegraphics[width=0.35\textwidth]{k3_p97-pre_2.pdf}\label{k3_p97-pre_2}}
+  \caption{Grokking phenomenon on transformer model with $K=3$}
+  \label{K=3} 
+\end{figure}
+
+Based on the above findings, we perform experiments for $K=4,5,6$ with $K=2$ pretrained. The results are displayed in Figure \ref{K=4,5,6}. Compared with Figure \ref{k3_p97-pre_2}, the training accuracy still groks even though a little bit later than $K=3$. However, the validation accuracy shows unstable performance: when $K=4$ (see Figure \ref{k=4}), it rises to about 0.5 and then gradually decreases; when $K=6$ (see Figure \ref{k=6}), it does not grok within the range of epochs plotted. This implies the ``curse of dimension'' such that the larger $K$ corresponds to a harder task to learn and generalize.
+
+We found that when $K=4$, the performance is rather strange. We conjecture
+that there are some similar structures of $K=2$ and $K=4$, the model learns
+this structure at first instead of correct modular addition.
+
+\begin{figure}[H]
+  \centering
+  %\includegraphics[width=3in]{fig5}
+  \subfloat[Training and validation accuracy\\ with $K=4$ ]{
+      \includegraphics[width=0.35\textwidth]{k4_p97-pre.pdf}\label{k=4}}
+  \subfloat[Training and validation accuracy\\ with $K=5$]{
+      \includegraphics[width=0.35\textwidth]{k5_p97-pre.pdf}\label{k=5}}
+  \subfloat[Training and validation accuracy\\ with $K=6$]{
+      \includegraphics[width=0.35\textwidth]{k6_p97-pre.pdf}\label{k=6}}
+  \caption{Grokking phenomenon on transformer model with larger $K$ based on pretrained $K=2$}
+  \label{K=4,5,6} 
 \end{figure}
 
 
-All artwork must be neat, clean, and legible. Lines should be dark enough for
-purposes of reproduction. The figure number and caption always appear after the
-figure. Place one line space before the figure caption and one line space after
-the figure. The figure caption should be lower case (except for first word and
-proper nouns); figures are numbered consecutively.
-
-
-You may use color figures.  However, it is best for the figure captions and the
-paper body to be legible if the paper is printed in either black/white or in
-color.
-
-
-\subsection{Tables}
-
-
-All tables must be centered, neat, clean and legible.  The table number and
-title always appear before the table.  See Table~\ref{sample-table}.
-
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-
-Note that publication-quality tables \emph{do not contain vertical rules.} We
-strongly suggest the use of the \verb+booktabs+ package, which allows for
-typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-
-\begin{table}
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-
-\section{Final instructions}
-
-
-Do not change any aspects of the formatting parameters in the style files.  In
-particular, do not modify the width or length of the rectangle the text should
-fit into, and do not change font sizes (except perhaps in the
-\textbf{References} section; see below). Please note that pages should be
-numbered.
-
-
-\section{Preparing PDF files}
-
-
-Please prepare submission files with paper size ``US Letter,'' and not, for
-example, ``A4.''
-
-
-Fonts were the main cause of problems in the past years. Your PDF file must only
-contain Type 1 or Embedded TrueType fonts. Here are a few instructions to
-achieve this.
-
-
-\begin{itemize}
-
-
-\item You should directly generate PDF files using \verb+pdflatex+.
-
-
-\item You can check which fonts a PDF files uses.  In Acrobat Reader, select the
-  menu Files$>$Document Properties$>$Fonts and select Show All Fonts. You can
-  also use the program \verb+pdffonts+ which comes with \verb+xpdf+ and is
-  available out-of-the-box on most Linux machines.
-
-
-\item The IEEE has recommendations for generating PDF files whose fonts are also
-  acceptable for NeurIPS. Please see
-  \url{http://www.emfield.org/icuwb2010/downloads/IEEE-PDF-SpecV32.pdf}
-
-
-\item \verb+xfig+ "patterned" shapes are implemented with bitmap fonts.  Use
-  "solid" shapes instead.
-
-
-\item The \verb+\bbold+ package almost always uses bitmap fonts.  You should use
-  the equivalent AMS Fonts:
-\begin{verbatim}
-   \usepackage{amsfonts}
-\end{verbatim}
-followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or \verb+\mathbb{C}+
-for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You can also use the following
-workaround for reals, natural and complex:
-\begin{verbatim}
-   \newcommand{\RR}{I\!\!R} %real numbers
-   \newcommand{\Nat}{I\!\!N} %natural numbers
-   \newcommand{\CC}{I\!\!\!\!C} %complex numbers
-\end{verbatim}
-Note that \verb+amsfonts+ is automatically loaded by the \verb+amssymb+ package.
-
-
-\end{itemize}
-
-
-If your file contains type 3 fonts or non embedded TrueType fonts, we will ask
-you to fix it.
-
-
-\subsection{Margins in \LaTeX{}}
-
-
-Most of the margin problems come from figures positioned by hand using
-\verb+\special+ or other commands. We suggest using the command
-\verb+\includegraphics+ from the \verb+graphicx+ package. Always specify the
-figure width as a multiple of the line width as in the example below:
-\begin{verbatim}
-   \usepackage[pdftex]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.pdf}
-\end{verbatim}
-See Section 4.4 in the graphics bundle documentation
-(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
-
-
-A number of width problems arise when \LaTeX{} cannot properly hyphenate a
-line. Please give LaTeX hyphenation hints using the \verb+\-+ command when
-necessary.
-
-
-\begin{ack}
-Use unnumbered first level headings for the acknowledgments. All acknowledgments
-go at the end of the paper before the list of references. Moreover, you are required to declare
-funding (financial activities supporting the submitted work) and competing interests (related financial activities outside the submitted work).
-More information about this disclosure can be found at: \url{https://neurips.cc/Conferences/2022/PaperInformation/FundingDisclosure}.
-
-
-Do {\bf not} include this section in the anonymized submission, only in the final paper. You can use the \texttt{ack} environment provided in the style file to autmoatically hide this section in the anonymized submission.
-\end{ack}
-
-
-\section*{References}
-
-
-References follow the acknowledgments. Use unnumbered first-level heading for
-the references. Any choice of citation style is acceptable as long as you are
-consistent. It is permissible to reduce the font size to \verb+small+ (9 point)
-when listing the references.
-Note that the Reference section does not count towards the page limit.
-\medskip
-
-
-{
-\small
-
-
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
-connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
-(eds.), {\it Advances in Neural Information Processing Systems 7},
-pp.\ 609--616. Cambridge, MA: MIT Press.
-
-
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
-  Realistic Neural Models with the GEneral NEural SImulation System.}  New York:
-TELOS/Springer--Verlag.
-
-
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of learning and
-recall at excitatory recurrent synapses and cholinergic modulation in rat
-hippocampal region CA3. {\it Journal of Neuroscience} {\bf 15}(7):5249-5262.
-}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Checklist}
-
-
-%%% BEGIN INSTRUCTIONS %%%
-The checklist follows the references.  Please
-read the checklist guidelines carefully for information on how to answer these
-questions.  For each question, change the default \answerTODO{} to \answerYes{},
-\answerNo{}, or \answerNA{}.  You are strongly encouraged to include a {\bf
-justification to your answer}, either by referencing the appropriate section of
-your paper or providing a brief inline description.  For example:
-\begin{itemize}
-  \item Did you include the license to the code and datasets? \answerYes{See Section~\ref{gen_inst}.}
-  \item Did you include the license to the code and datasets? \answerNo{The code and the data are proprietary.}
-  \item Did you include the license to the code and datasets? \answerNA{}
-\end{itemize}
-Please do not modify the questions and only use the provided macros for your
-answers.  Note that the Checklist section does not count towards the page
-limit.  In your paper, please delete this instructions block and only keep the
-Checklist section heading above along with the questions/answers below.
-%%% END INSTRUCTIONS %%%
-
-
-\begin{enumerate}
-
-
-\item For all authors...
-\begin{enumerate}
-  \item Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
-    \answerTODO{}
-  \item Did you describe the limitations of your work?
-    \answerTODO{}
-  \item Did you discuss any potential negative societal impacts of your work?
-    \answerTODO{}
-  \item Have you read the ethics review guidelines and ensured that your paper conforms to them?
-    \answerTODO{}
-\end{enumerate}
-
-
-\item If you are including theoretical results...
-\begin{enumerate}
-  \item Did you state the full set of assumptions of all theoretical results?
-    \answerTODO{}
-        \item Did you include complete proofs of all theoretical results?
-    \answerTODO{}
-\end{enumerate}
-
-
-\item If you ran experiments...
-\begin{enumerate}
-  \item Did you include the code, data, and instructions needed to reproduce the main experimental results (either in the supplemental material or as a URL)?
-    \answerTODO{}
-  \item Did you specify all the training details (e.g., data splits, hyperparameters, how they were chosen)?
-    \answerTODO{}
-        \item Did you report error bars (e.g., with respect to the random seed after running experiments multiple times)?
-    \answerTODO{}
-        \item Did you include the total amount of compute and the type of resources used (e.g., type of GPUs, internal cluster, or cloud provider)?
-    \answerTODO{}
-\end{enumerate}
-
-
-\item If you are using existing assets (e.g., code, data, models) or curating/releasing new assets...
-\begin{enumerate}
-  \item If your work uses existing assets, did you cite the creators?
-    \answerTODO{}
-  \item Did you mention the license of the assets?
-    \answerTODO{}
-  \item Did you include any new assets either in the supplemental material or as a URL?
-    \answerTODO{}
-  \item Did you discuss whether and how consent was obtained from people whose data you're using/curating?
-    \answerTODO{}
-  \item Did you discuss whether the data you are using/curating contains personally identifiable information or offensive content?
-    \answerTODO{}
-\end{enumerate}
-
-
-\item If you used crowdsourcing or conducted research with human subjects...
-\begin{enumerate}
-  \item Did you include the full text of instructions given to participants and screenshots, if applicable?
-    \answerTODO{}
-  \item Did you describe any potential participant risks, with links to Institutional Review Board (IRB) approvals, if applicable?
-    \answerTODO{}
-  \item Did you include the estimated hourly wage paid to participants and the total amount spent on participant compensation?
-    \answerTODO{}
-\end{enumerate}
-
-
-\end{enumerate}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\section{Explanation of Grokking}
+In this section, we will provide some explanations for the Grokking phenomenon. 
+These explanations are mainly based on two aspects: 
+the principle of acceleration achieved by the Grokfast algorithm 
+and the existing theories that explain the Grokking phenomenon at different stages.
+
+
+\subsection{Difficulty in learning the low-frequency part of parameters}
+
+According to the experimental results of the Grokfast algorithm, 
+the occurrence of the Grokking phenomenon is significantly faster than 
+that without using Grokfast. The gap between the reduction of training 
+error and the improvement of generalization accuracy has narrowed significantly, 
+indicating the success of the Grokfast algorithm in accelerating the 
+Grokking phenomenon.
+
+
+The Grokfast algorithm incorporates an update that amplifies 
+the low-frequency components of the gradient after gradient updates, 
+while maintaining the rest of the updates unchanged. Therefore, 
+its success illustrates an important reason for the Grokking phenomenon: 
+the low-frequency components of parameters are difficult to learn. 
+During the initial stages of training, the high-frequency components of 
+parameters are quickly learned, and these components are sufficient for 
+the model to fit the data on the training set, as the amplitude of the 
+high-frequency components of parameters is larger, allowing them 
+to represent existing data well. However, when generalizing across the 
+entire dataset, the high-frequency components of parameters cannot fit 
+the low-frequency components of data on the validation set well. 
+They can only represent data that is not on the training set very roughly, 
+making it difficult to improve generalization accuracy.
+
+
+In the process of generalization, the model is actually learning the 
+low-frequency part of the parameters to more accurately fit the validation set. 
+Grokfast enables the model to learn the low-frequency part of the parameters more quickly, 
+which makes the generalization of the model faster compared to attain high accuracy 
+on the training set. Therefore, an important reason for the Grokking phenomenon is 
+the difficulty in learning the low-frequency part of parameters.
+
+
+\subsection{Existing theoretical explanations at different stages}
+
+
+According to \cite{lyu2023dichotomy}, the large initialization induces a very strong early phase implicit 
+bias towards kernel predictors, but over time, it decays and competes with a late phase 
+implicit bias towards min-norm/max-margin predictors induced by the small weight decay, 
+resulting in a transition that turns out to be proven sharp in between. 
+
+
+Briefly, the phenomenon of rapid learning on the training set in the early stages is 
+similar to the behavior of kernel predictors, while the phenomenon of gradual 
+generalization in the later stages can be explained by min-norm or max-margin predictors 
+caused by the small weight decay. The occurrence of the Grokking phenomenon is based 
+on the sharp transformation between these two stages, and the characteristics of 
+each stage conform to the properties of existing models.Specifically, 
+the effectiveness of kernel predictors is closely related to the choice of kernel, 
+which can easily lead to overfitting, while min-norm or max-margin predictors have 
+stronger robustness and generalization ability. They have a regularization structure, 
+thus they learn slower but have less generalization error.
+This explanation corresponds precisely to the two stages of the Grokking phenomenon.
+
+
+In terms of kernel rigime, \cite{mohamadi2024you} provides a more systematic explanation. 
+The paper points out that, the dichotomy between early kernel regime and late feature 
+learning triggered by weak implicit or explicit regularization seems to be 
+the most promising theory to explain grokking. 
+
+
+The paper also proves that, a wide variety of architectures all fail to generalize 
+in the initial phase of training,because networks in the kernel regime can only generalize 
+if trained on at least a constant fraction of all possible data points. If this property 
+is not satisfied by the training set, then the Grokking phenomenon may not even occur.
+
+
+In addition, the paper demonstrates that networks with appropriate regularization 
+can generalize with many few samples. 
+This highlights the importance of regularization in the Grokking phenomenon, 
+which plays a crucial role in later generalization.
 
 \appendix
 
-
-\section{Appendix}
-
-
-Optionally include extra information (complete proofs, additional experiments and plots) in the appendix.
-This section will often be part of the supplemental material.
-
+\bibliographystyle{unsrt}
+\bibliography{Ref}
 
 \end{document}
